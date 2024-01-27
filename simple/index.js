@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("rightDoor").classList.add("active-right");
           document.getElementById("leftDoor").classList.add("active-left");
         }, animate);
-      }, 300);
+      }, 5000);
     };
 
     item.addEventListener("click", handleButtonClick);
