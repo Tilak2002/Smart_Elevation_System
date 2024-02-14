@@ -1,3 +1,31 @@
+// Firebase Database Communication
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-app.js";
+
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.3.0/firebase-auth.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAi3tle8OAtRbIcGK4suPkPx55Jb2FUdy8",
+  authDomain: "smart-elevation-system.firebaseapp.com",
+  databaseURL: "https://smart-elevation-system-default-rtdb.firebaseio.com",
+  projectId: "smart-elevation-system",
+  storageBucket: "smart-elevation-system.appspot.com",
+  messagingSenderId: "182248346079",
+  appId: "1:182248346079:web:c88f0b281365fc7ad4b46a",
+  measurementId: "G-WG5NN4V9V9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+// const auth = getAuth(app);
+const database = firebase.database();
+// var db = firebase.firestore();
+
+
+// Elevator Control Code Started
+
 let current = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -5,6 +33,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   floorListItems.forEach((item) => {
     const handleButtonClick = function () {
+      // compare weight started
+      var weight=window.prompt("Enter weight ")
+      const user = database.ref('televator')
+      user.on("value",function(snapshot) {
+        const data = snapshot.val();
+        console.log(data.weight)
+        if(weight>data.weight)
+      {
+        window.alert("Entered weight is greater than capacity of lift")
+        return
+      }
+       
+      })
+
+
+      // compare weight ended
       const floor = parseInt(this.getAttribute("data-floor"));
       const height = floor * 20;
       const animate = Math.abs(current - floor) * 1000;
@@ -20,11 +64,31 @@ document.addEventListener("DOMContentLoaded", function () {
         elevatorContainer.style.bottom = height + "%";
         current = floor;
 
+
+        // Firebase code started
+
+// ============ update data to firebase===============
+  
+   console.log("abcd")
+  //var db = firebase.firestore();
+  var database = firebase.database();
+
+  const dataRef = database.ref("televator")
+
+  const newData = {
+  floor:current
+  };
+  
+  dataRef.update(newData)
+// window.alert("Data successfully updated!");
+
+// Firebase code ended
+
         setTimeout(() => {
           document.getElementById("rightDoor").classList.add("active-right");
           document.getElementById("leftDoor").classList.add("active-left");
         }, animate);
-      }, 5000);
+      }, 3000);
     };
 
     item.addEventListener("click", handleButtonClick);
@@ -35,67 +99,4 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-
-// this below is for template js
-
-// var current = 0;
-
-// document.addEventListener("DOMContentLoaded", function () {
-//     var floorListItems = document.querySelectorAll("#floorSelect li");
-//     // var floorListItems = document.querySelectorAll("#floorSelect li");
-
-//     floorListItems.forEach(function (item) {
-//         item.addEventListener("click", function () {
-//             var floor = parseInt(this.getAttribute("data-floor"));
-//             var height = floor * 20;
-//             var animate = Math.abs(current - floor) * 1000;
-
-//             if (floor === current) return;
-
-//             document.getElementById("rightDoor").classList.remove("active-right");
-//             document.getElementById("leftDoor").classList.remove("active-left");
-
-//             setTimeout(function () {
-//                 var elevatorContainer = document.getElementById("elevatorContainer");
-//                 elevatorContainer.style.transition = "all " + animate + "ms linear";
-//                 elevatorContainer.style.bottom = height + "%";
-//                 current = floor;
-
-//                 setTimeout(function () {
-//                     document.getElementById("rightDoor").classList.add("active-right");
-//                     document.getElementById("leftDoor").classList.add("active-left");
-//                 }, animate);
-
-//             }, 300);
-//         });
-//     });
-// });
-
-
-
-
-// var current = 0;
-// $(document).ready(function () {
-
-//     $("#floorSelect li").click(function () {
-
-//         var floor = parseInt($(this).data("floor")),
-//             height = floor * 20,
-//             animate = Math.abs(current - floor) * 1000;
-//         if (floor == current) return;
-//         $("#rightDoor").removeClass("active-right");
-//         $("#leftDoor").removeClass("active-left");
-//         setTimeout(function () {
-//             $("#elevatorContainer").css("transition", "all " + animate + "ms linear");
-//             $("#elevatorContainer").css("bottom", height + "%");
-//             current = floor;
-//             setTimeout(function () {
-
-//                 $("#rightDoor").addClass("active-right");
-//                 $("#leftDoor").addClass("active-left");
-
-//             }, animate);
-//         }, 300);
-//     });
-
-// });
+      // Elevator Control Code Ended
