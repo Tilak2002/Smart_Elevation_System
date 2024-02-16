@@ -27,14 +27,13 @@ const database = firebase.database();
 // Elevator Control Code Started
 
 let current = 0;
-
 document.addEventListener("DOMContentLoaded", function () {
   const floorListItems = document.querySelectorAll(".number .btn");
 
   floorListItems.forEach((item) => {
     const handleButtonClick = function () {
       // compare weight started
-      var weight=window.prompt("Enter weight ")
+      /*var weight=window.prompt("Enter weight ")
       const user = database.ref('televator')
       user.on("value",function(snapshot) {
         const data = snapshot.val();
@@ -42,10 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
         if(weight>data.weight)
       {
         window.alert("Entered weight is greater than capacity of lift")
-        return
       }
        
-      })
+      })*/
 
 
       // compare weight ended
