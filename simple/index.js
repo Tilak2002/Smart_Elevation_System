@@ -48,8 +48,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // compare weight ended
       const floor = parseInt(this.getAttribute("data-floor"));
-      const height = floor * 20;
-      const animate = Math.abs(current - floor) * 1000;
+      console.log(floor);
+      const height = floor * 26.6;                           // 26.6 is the height of each floor
+      const animate = Math.abs(current - floor) * 1000;      //Used for timing of the elevator for moving up and down
+      console.log(animate);
 
       if (floor === current) return;
 
