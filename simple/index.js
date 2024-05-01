@@ -25,78 +25,76 @@ const database = firebase.database();
 
 
 // Elevator Control Code Started
-
+// Elevator Control Code Started
 let current = 0;
+
 document.addEventListener("DOMContentLoaded", function () {
   const floorListItems = document.querySelectorAll(".number .btn");
 
   floorListItems.forEach((item) => {
     const handleButtonClick = function () {
-      // compare weight started
-      /*var weight=window.prompt("Enter weight ")
-      const user = database.ref('televator')
-      user.on("value",function(snapshot) {
-        const data = snapshot.val();
-        console.log(data.weight)
-        if(weight>data.weight)
-      {
-        window.alert("Entered weight is greater than capacity of lift")
-      }
-       
-      })*/
+      const compare = () => {
+        var weight = window.prompt("Enter weight ");
+        console.log(weight);
 
+        const user = database.ref('televator');
+        user.once("value", function(snapshot) {
+          const data = snapshot.val();
+          console.log(data.weight);
+          if(weight!= null)
+          {
+            const dataRef = database.ref('televator')
 
-      // compare weight ended
-      const floor = parseInt(this.getAttribute("data-floor"));
-      console.log(floor);
-      const height = floor * 26.6;                           // 26.6 is the height of each floor
-      const animate = Math.abs(current - floor) * 1000;      //Used for timing of the elevator for moving up and down
-      console.log(animate);
+const newData = {
+  rtweight:weight
+};
 
-      if (floor === current) return;
+dataRef.update(newData)
 
-      document.getElementById("rightDoor").classList.remove("active-right");
-      document.getElementById("leftDoor").classList.remove("active-left");
-
-      setTimeout(() => {
-        const elevatorContainer = document.getElementById("elevatorContainer");
-        elevatorContainer.style.transition = "all " + animate + "ms linear";
-        elevatorContainer.style.bottom = height + "%";
-        current = floor;
-
-
-        // Firebase code started
-
-// ============ update data to firebase===============
+            if (weight > data.weight) {
+              window.alert("Entered weight is greater than capacity of lift");
+              compare(); // Prompt again if weight is greater
+            } else {
+              // Proceed with elevator movement if weight is valid
+              const floor = parseInt(item.getAttribute("data-floor"));
+              console.log("Floor selected:", floor);
+              const height = floor * 26.6;
+              const animate = Math.abs(current - floor) * 1000;
   
-   console.log("abcd")
-  //var db = firebase.firestore();
-  var database = firebase.database();
-
-  const dataRef = database.ref("televator")
-
-  const newData = {
-  floor:current
-  };
+              if (floor !== current) {
+                document.getElementById("rightDoor").classList.remove("active-right");
+                document.getElementById("leftDoor").classList.remove("active-left");
   
-  dataRef.update(newData)
-// window.alert("Data successfully updated!");
+                setTimeout(() => {
+                  const elevatorContainer = document.getElementById("elevatorContainer");
+                  elevatorContainer.style.transition = "all " + animate + "ms linear";
+                  elevatorContainer.style.bottom = height + "%";
+                  current = floor;
+  
+                  // Update data to Firebase
+                  const dataRef = database.ref("televator");
+                  const newData = { floor: current };
+                  dataRef.update(newData);
+  
+                  setTimeout(() => {
+                    document.getElementById("rightDoor").classList.add("active-right");
+                    document.getElementById("leftDoor").classList.add("active-left");
+                  }, animate);
+                }, 3000);
+              }
+            }
+          }
+          else{
+            window.alert("weight is Required");
+            compare();
+          }
+        });
+      };
 
-// Firebase code ended
-
-        setTimeout(() => {
-          document.getElementById("rightDoor").classList.add("active-right");
-          document.getElementById("leftDoor").classList.add("active-left");
-        }, animate);
-      }, 3000);
+      compare();
     };
 
     item.addEventListener("click", handleButtonClick);
-
-    return () => {
-      item.removeEventListener("click", handleButtonClick);
-    };
   });
 });
-
       // Elevator Control Code Ended
