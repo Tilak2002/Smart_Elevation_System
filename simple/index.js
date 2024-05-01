@@ -27,6 +27,7 @@ const database = firebase.database();
 // Elevator Control Code Started
 // Elevator Control Code Started
 let current = 0;
+let previous = 0;
 
 document.addEventListener("DOMContentLoaded", function () {
   const floorListItems = document.querySelectorAll(".number .btn");
@@ -35,13 +36,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const handleButtonClick = function () {
       const compare = () => {
         var weight = window.prompt("Enter weight ");
+        weight = parseInt(weight);
         console.log(weight);
 
         const user = database.ref('televator');
         user.once("value", function(snapshot) {
           const data = snapshot.val();
           console.log(data.weight);
-          if(weight!= null)
+          if(weight!= null && weight>0)
           {
             const dataRef = database.ref('televator')
 
@@ -59,7 +61,7 @@ dataRef.update(newData)
               const floor = parseInt(item.getAttribute("data-floor"));
               console.log("Floor selected:", floor);
               const height = floor * 26.6;
-              const animate = Math.abs(current - floor) * 1000;
+              const animate = Math.abs(current - floor) * 2000;
   
               if (floor !== current) {
                 document.getElementById("rightDoor").classList.remove("active-right");
@@ -69,11 +71,14 @@ dataRef.update(newData)
                   const elevatorContainer = document.getElementById("elevatorContainer");
                   elevatorContainer.style.transition = "all " + animate + "ms linear";
                   elevatorContainer.style.bottom = height + "%";
+                  previous = current;
                   current = floor;
   
                   // Update data to Firebase
                   const dataRef = database.ref("televator");
-                  const newData = { floor: current };
+                  const newData = { floor: current,
+                                    previous_floor: previous 
+                                  };
                   dataRef.update(newData);
   
                   setTimeout(() => {
@@ -85,7 +90,7 @@ dataRef.update(newData)
             }
           }
           else{
-            window.alert("weight is Required");
+            window.alert("Weight is not entered or is inappropriate");
             compare();
           }
         });
