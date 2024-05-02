@@ -61,7 +61,7 @@ dataRef.update(newData)
               const floor = parseInt(item.getAttribute("data-floor"));
               console.log("Floor selected:", floor);
               const height = floor * 26.6;
-              const animate = Math.abs(current - floor) * 2000;
+              const animate = Math.abs(current - floor) * 7000;
   
               if (floor !== current) {
                 document.getElementById("rightDoor").classList.remove("active-right");
